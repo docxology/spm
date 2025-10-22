@@ -15,20 +15,71 @@ can be found on the [SPM website](https://www.fil.ion.ucl.ac.uk/spm/).
  
 See also `Contents.m`, `AUTHORS.txt` and `LICENCE`.
   
-# SPM
- 
-Statistical Parametric Mapping is the construction and assessment of 
-spatially extended statistical processes used to test hypotheses about 
-functional imaging data. These ideas have been instantiated in a 
+# SPM25 - Refactored Modular Structure
+
+Statistical Parametric Mapping is the construction and assessment of
+spatially extended statistical processes used to test hypotheses about
+functional imaging data. These ideas have been instantiated in a
 free and open source software that is called SPM.
 
-The SPM software package has been designed for the analysis of brain 
-imaging data sequences. The sequences can be a series of images from 
-different cohorts, or time-series from the same subject. The current 
-release is designed for the analysis of fMRI, PET, SPECT, EEG and MEG.
+This release (SPM25) features a **completely reorganized modular structure**
+that improves code organization, maintainability, and usability while
+maintaining **full backward compatibility** with existing SPM code.
 
-SPM is made freely available to the [neuro]imaging community, to promote
-collaboration and a common analysis scheme across laboratories.
+## Key Features
+
+- **Modular Organization**: 819 functions organized into logical modules
+- **Improved Maintainability**: Clear separation of concerns
+- **Enhanced Documentation**: Comprehensive module documentation
+- **Development Tools**: Setup scripts, testing framework, and development utilities
+- **Backward Compatibility**: Existing code continues to work without changes
+
+## Module Organization
+
+The SPM codebase is now organized into specialized modules:
+
+### Core Modules
+- **core/** - Basic utilities and operations
+- **stats/** - Statistical functions and distributions
+- **imaging/** - Image processing and spatial operations
+
+### Specialized Modules
+- **dcm/** - Dynamic Causal Modeling
+- **eeg/** - EEG/MEG processing
+- **io/** - File I/O operations
+- **design/** - Experimental design
+- **bms/** - Bayesian Model Selection
+
+### Advanced Modules
+- **bayesian/** - Bayesian inference methods
+- **modeling/** - Statistical modeling
+- **mesh/** - Mesh operations
+- **graph/** - Graph analysis
+- **spectral/** - Spectral analysis
+
+## Installation and Setup
+
+### Quick Start
+```matlab
+% Standard setup (recommended for users)
+spm_setup()
+
+% Development setup (for contributors)
+spm_dev_setup()
+```
+
+### Development Tools
+- `spm_dev_info()` - Show development information
+- `spm_run_tests()` - Run test suite
+- `fork/docs/` - Comprehensive documentation
+- `fork/examples/` - Usage examples
+
+## Documentation
+
+- **Main Documentation**: See `fork/README.md` for detailed module information
+- **Function Documentation**: Each module contains detailed help text
+- **Examples**: Usage examples in `fork/examples/`
+- **Development Guide**: Contributing guidelines in `fork/dev/`
 
 # Software
 

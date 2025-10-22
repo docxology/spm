@@ -1,0 +1,170 @@
+==============================================================================
+SPM25 MEX FILES REORGANIZATION PLAN
+==============================================================================
+
+CURRENT STATE:
+- 72 MEX files at root level (/spm/)
+- 18 unique functions × 4 architectures each
+- All organized by architecture, not by functionality
+
+ISSUE:
+Root directory cluttered with .mex* files mixed with MATLAB source files
+
+SOLUTION:
+Move MEX binaries to their respective module directories (with .m files)
+
+==============================================================================
+DETAILED REORGANIZATION MAPPING
+==============================================================================
+
+CORE MODULES:
+  core/array/
+    - spm_cat.m → spm_cat.mex* (all 4 architectures)
+    - spm_diag_array.m (no MEX - pure MATLAB)
+    
+  core/file/
+    - spm_existfile.m → spm_existfile.mex* (all 4 architectures)
+    - spm_unlink.m → spm_unlink.mex* (all 4 architectures)
+
+IMAGING MODULES:
+  imaging/smoothing/
+    - spm_bsplinc.m → spm_bsplinc.mex* (all 4 architectures)
+    - spm_bsplins.m → spm_bsplins.mex* (all 4 architectures)
+    - spm_conv_vol.m → spm_conv_vol.mex* (all 4 architectures)
+    - spm_convmtx.m (no MEX - pure MATLAB)
+    - spm_smooth.m (no MEX - pure MATLAB)
+    
+  imaging/rendering/
+    - spm_sample_vol.m → spm_sample_vol.mex* (all 4 architectures)
+    - spm_slice_vol.m → spm_slice_vol.mex* (all 4 architectures)
+    - spm_render_vol.m → spm_render_vol.mex* (all 4 architectures)
+    - spm_project.m → spm_project.mex* (all 4 architectures)
+    - spm_hist.m → spm_hist.mex* (all 4 architectures)
+    - spm_hist2.m → spm_hist2.mex* (all 4 architectures)
+    - spm_voronoi.m → spm_voronoi.mex* (all 4 architectures)
+    
+  imaging/spatial/
+    - spm_diffeo.m → spm_diffeo.mex* (all 4 architectures)
+    - spm_field.m → spm_field.mex* (all 4 architectures)
+    - spm_global.m → spm_global.mex* (all 4 architectures)
+    - spm_resels_vol.m → spm_resels_vol.mex* (all 4 architectures)
+    - spm_brainwarp.m (not at root - already organized)
+    
+  imaging/segmentation/
+    - spm_dilate_erode.m (no .m at root - handled elsewhere)
+    - spm_dilate_erode.mex* (move to segmentation)
+    - spm_bwlabel.m → spm_bwlabel.mex* (all 4 architectures)
+    - spm_mrf.m → spm_mrf.mex* (all 4 architectures)
+
+MESH MODULES:
+  mesh/geometry/
+    - spm_mesh_dist.m → spm_mesh_dist.mex* (all 4 architectures)
+    - spm_mesh_geodesic.m → spm_mesh_geodesic.mex* (all 4 architectures)
+    - spm_mesh_reduce.m → spm_mesh_reduce.mex* (all 4 architectures)
+    - spm_mesh_utils.m → spm_mesh_utils.mex* (all 4 architectures)
+    - spm_mesh_ray_triangle.m → spm_mesh_ray_triangle.mex* (all 4 architectures)
+    - spm_get_lm.m → spm_get_lm.mex* (all 4 architectures)
+
+IO MODULES:
+  io/data/
+    - spm_jsonread.m → spm_jsonread.mex* (all 4 architectures)
+
+UTILITIES:
+  utilities/
+    - spm_gamrnd.m → spm_gamrnd.mex* (all 4 architectures)
+    - spm_krutil.m → spm_krutil.mex* (all 4 architectures)
+    - spm_gmmlib.m → spm_gmmlib.mex* (all 4 architectures)
+
+STATS:
+  stats/inference/ or stats/distributions/
+    - spm_gmmlib.m → spm_gmmlib.mex* (all 4 architectures)
+
+==============================================================================
+ARCHITECTURE SUPPORT MATRIX
+==============================================================================
+
+Each of 18 functions has 4 binary variants:
+
+Function Name         | .mexw64    | .mexa64    | .mexmaca64 | .mexmaci64
+                      | (Windows)  | (Linux)    | (Mac ARM)  | (Mac Intel)
+                      |-----------|-----------|-----------|-----------
+spm_bsplins          | Required  | Required  | Required  | Required
+spm_bwlabel          | Required  | Required  | Required  | Required
+spm_diffeo           | Required  | Required  | Required  | Required
+spm_field            | Required  | Required  | Required  | Required
+spm_gamrnd           | Required  | Required  | Required  | Required
+spm_get_lm           | Required  | Required  | Required  | Required
+spm_global           | Required  | Required  | Required  | Required
+spm_gmmlib           | Required  | Required  | Required  | Required
+spm_hist             | Required  | Required  | Required  | Required
+spm_hist2            | Required  | Required  | Required  | Required
+spm_krutil           | Required  | Required  | Required  | Required
+spm_mrf              | Required  | Required  | Required  | Required
+spm_project          | Required  | Required  | Required  | Required
+spm_resels_vol       | Required  | Required  | Required  | Required
+spm_sample_vol       | Required  | Required  | Required  | Required
+spm_slice_vol        | Required  | Required  | Required  | Required
+spm_unlink           | Required  | Required  | Required  | Required
+spm_voronoi          | Required  | Required  | Required  | Required
+
+==============================================================================
+SIZE IMPACT
+==============================================================================
+
+Files at Root Before: 72 MEX files (~1.2 MB total)
+Files at Root After: 0 MEX files (all moved to modules)
+
+Benefit: Root directory cleaner, easier to navigate, better organization
+
+==============================================================================
+MIGRATION CHECKLIST
+==============================================================================
+
+1. [ ] Verify all 18 × 4 = 72 MEX files are accounted for
+2. [ ] Create target directories in modules
+3. [ ] Move MEX files to respective directories
+4. [ ] Update build system (src/Makefile) to output to modules
+5. [ ] Test path resolution in MATLAB
+6. [ ] Update documentation
+7. [ ] Verify backward compatibility via spm_setup()
+8. [ ] Test on all supported platforms
+
+==============================================================================
+MATLAB PATH REQUIREMENTS
+==============================================================================
+
+Critical Requirement: .m wrapper file and .mex* binary MUST be in same directory
+
+Example for spm_cat:
+  ✓ CORRECT:  core/array/spm_cat.m + core/array/spm_cat.mexa64
+  ✗ WRONG:    core/array/spm_cat.m + spm/spm_cat.mexa64
+
+MATLAB Resolution Order:
+1. User's current directory
+2. addpath() directories (priority order)
+3. MATLAB's default path
+4. Platform-specific variant selected automatically
+
+==============================================================================
+BUILD SYSTEM UPDATES NEEDED
+==============================================================================
+
+File: src/Makefile
+Lines: 45-56 (SPMMEX variable)
+
+Current: All outputs go to root directory
+Updated: Outputs go to respective module directories
+
+Example Update:
+  OLD: SPMMEX = spm_sample_vol.$(MEXEXT) spm_slice_vol.$(MEXEXT) ...
+  NEW: SPMMEX_IMAGING = ../imaging/rendering/spm_sample_vol.$(MEXEXT) ...
+
+==============================================================================
+VERSION COMPATIBILITY
+==============================================================================
+
+SPM25 Refactoring: Full compatibility maintained
+SPM versions with existing .m files: No changes needed
+Future versions: Use modular organization from start
+
+==============================================================================
